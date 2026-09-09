@@ -25,10 +25,14 @@ class EventoController extends Controller
      */
     public function show($id)
     {
-        $evento = Evento::find($id);
+        $evento = Evento::findOrFail($id);
 
-        // ⚠ BUG LEGADO: Carrega TODOS os registros da tabela no PHP
-        $perguntas = Pergunta::all();
+        // Ticket #004: with('user') carrega os autores de uma vez (evita o N+1),
+        // filtrando pelo evento, das mais recentes para as mais antigas, 10 por página.
+        $perguntas = Pergunta::with('user')
+            ->where('evento_id', $evento->id)
+            ->orderByDesc('created_at')
+            ->paginate(10);
 
         return view('eventos.show', compact('evento', 'perguntas'));
     }

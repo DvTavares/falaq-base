@@ -16,4 +16,10 @@ class Pergunta extends Model
     {
         return $this->belongsTo(Evento::class);
     }
+
+    // Ticket #003: cada pergunta pertence a um participante (autor)
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
