@@ -7,6 +7,7 @@ use App\Models\Evento;
 use App\Models\Pergunta;
 use App\Http\Requests\StorePerguntaRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EventoController extends Controller
 {
@@ -45,6 +46,7 @@ class EventoController extends Controller
 
         Pergunta::create([
             'evento_id' => $evento->id,
+            'user_id' => Auth::user()->id,
             'texto'     => $request->input('texto'),
             'status'    => 'pendente',
         ]);
@@ -59,7 +61,7 @@ class EventoController extends Controller
     }
 
     public function store(EventoFormRequest $req){
-        $evento = Evento::create($req->validated());
+        $evento = $req->user()->eventos()->create($req->validated());
         return redirect()->route('eventos.show', $evento->id);
     }
 }

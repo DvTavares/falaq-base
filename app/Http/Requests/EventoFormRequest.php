@@ -25,7 +25,9 @@ class EventoFormRequest extends FormRequest
         return [
             'titulo' => 'string|required', 
             'descricao' => 'string', 
-            'data_evento' => 'date'
+            'data_evento' => 'date',
+            'user_id' => ''
+            
         ];
     }
 }
