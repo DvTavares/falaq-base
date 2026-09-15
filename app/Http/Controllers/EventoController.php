@@ -29,8 +29,9 @@ class EventoController extends Controller
     {
         $evento = Evento::find($id);
 
-        // ⚠ BUG LEGADO: Carrega TODOS os registros da tabela no PHP
+        // Ticket #006: exibe apenas perguntas já moderadas/aprovadas pelo organizador
         $perguntas = Pergunta::where('evento_id', $id)
+            ->where('is_public', true)
             ->paginate(50);
 
         return view('eventos.show', compact('evento', 'perguntas'));
