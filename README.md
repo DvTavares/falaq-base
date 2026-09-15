@@ -2,8 +2,8 @@
 
 Rode os comandos a baixo no terminal na sua pasta de documentos para clonar e configurar o repositório
 ```sh
-git clone https://github.com/nato-re/falaq-base.git
-cd falaq-base
+#git clone https://github.com/nato-re/falaq-base.git
+#cd falaq-base
 composer install
 npm install
 npm run build
