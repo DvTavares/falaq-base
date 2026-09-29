@@ -20,7 +20,7 @@ class EventoController extends Controller
     {
         $evento = Evento::find($id);
 
-        $perguntas = Pergunta::all();
+        $perguntas = Pergunta::with('evento')->get();
 
         return view('eventos.show', compact('evento', 'perguntas'));
     }
@@ -39,6 +39,17 @@ class EventoController extends Controller
 
         return redirect()->route('eventos.show', $evento->id)
             ->with('sucesso', 'Sua pergunta foi enviada com sucesso!');
+    }
+
+    public function destroyPergunta(Pergunta $pergunta)
+    {
+        $this->authorize('delete', $pergunta);
+
+        $eventoId = $pergunta->evento_id;
+        $pergunta->delete();
+
+        return redirect()->route('eventos.show', $eventoId)
+            ->with('sucesso', 'Pergunta excluída com sucesso!');
     }
 
     public function create(){
