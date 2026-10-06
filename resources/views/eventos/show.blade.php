@@ -56,6 +56,19 @@
                         <span>Status: <span class="badge bg-success">{{ $pergunta->status }}</span></span>
                         <span>{{ $pergunta->created_at->format('d/m/Y H:i') }}</span>
                     </div>
+                    <div class="d-flex justify-content-end align-items-center gap-2 mt-3">
+                        <span class="fw-bold text-white">{{ $pergunta->votos_count }} {{ $pergunta->votos_count === 1 ? 'voto' : 'votos' }}</span>
+                        @auth
+                            <form action="{{ route('perguntas.votar', $pergunta) }}" method="POST">
+                                @csrf
+                                @if($pergunta->votada_pelo_usuario)
+                                    <button type="submit" class="btn btn-sm btn-primary fw-bold" title="Clique para remover seu voto">▲ Votado</button>
+                                @else
+                                    <button type="submit" class="btn btn-sm btn-outline-primary fw-bold" title="Votar nesta pergunta">▲ Votar</button>
+                                @endif
+                            </form>
+                        @endauth
+                    </div>
                 </div>
             </div>
         @empty

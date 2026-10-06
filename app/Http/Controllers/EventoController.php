@@ -18,9 +18,13 @@ class EventoController extends Controller
 
     public function show($id)
     {
-        $evento = Evento::find($id);
+        $evento = Evento::findOrFail($id);
 
-        $perguntas = Pergunta::all();
+        $perguntas = $evento->perguntas()
+            ->withCount('votos')
+            ->withExists(['votos as votada_pelo_usuario' => fn ($query) => $query->where('user_id', Auth::id())])
+            ->orderByDesc('votos_count')
+            ->get();
 
         return view('eventos.show', compact('evento', 'perguntas'));
     }
