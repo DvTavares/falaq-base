@@ -17,6 +17,12 @@
                 </button>
             </form>
         @endauth
+
+        @can('moderate', $evento)
+            <a href="{{ route('moderacoes.index', $evento) }}" class="px-4 py-2 text-sm font-medium rounded-md bg-yellow-500 hover:bg-yellow-600 text-gray-900 no-underline">
+                🛡️ Fila de Moderação
+            </a>
+        @endcan
     </div>
     <!-- Formularço de envio de Pergunta -->
     <div class="col-md-5 mb-4">
@@ -57,6 +63,24 @@
                         <span>Status: <span class="badge bg-success">{{ $pergunta->status }}</span></span>
                         <span>{{ $pergunta->created_at->format('d/m/Y H:i') }}</span>
                     </div>
+                    @auth
+                        @php($comErro = old('pergunta_denunciada') == $pergunta->id)
+                        <details class="mt-3" @if($comErro) open @endif>
+                            <summary class="text-danger small" style="cursor: pointer;">🚩 Denunciar pergunta</summary>
+                            <form action="{{ route('moderacoes.store', $pergunta) }}" method="POST" class="mt-2">
+                                @csrf
+                                <input type="hidden" name="pergunta_denunciada" value="{{ $pergunta->id }}">
+                                <textarea name="motivo" rows="2" placeholder="Descreva o motivo da denúncia (mín. 10 caracteres)"
+                                          class="form-control form-control-sm bg-dark text-white border-secondary @if($comErro) @error('motivo') is-invalid @enderror @endif">{{ $comErro ? old('motivo') : '' }}</textarea>
+                                @if($comErro)
+                                    @error('motivo')
+                                        <div class="invalid-feedback fw-bold">{{ $message }}</div>
+                                    @enderror
+                                @endif
+                                <button type="submit" class="btn btn-sm btn-outline-danger mt-2">Enviar denúncia</button>
+                            </form>
+                        </details>
+                    @endauth
                 </div>
             </div>
         @empty
@@ -68,7 +92,7 @@
         <!-- TICKET #002: Renderização dos Botões de Paginação -->
         @if(method_exists($perguntas, 'links'))
             <div class="d-flex justify-content-center mt-4">
-                
+                {{ $perguntas->links('pagination::bootstrap-5') }}
             </div>
         @endif
     </div>
